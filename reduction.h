@@ -3,23 +3,23 @@
 #include <algorithm>
 #include "word.h"
 
-class WordDeq
+class WordVector
 {
   public:
     // constructors
-    WordDeq();
-    WordDeq(const std::vector<Generator>& word_vec);
-    WordDeq(const Word* wd);
+    WordVector();
+    WordVector(const std::vector<Generator>& word_vec);
+    WordVector(const Word* wd);
 
     // overloaded operators
-    bool operator<(const WordDeq& wv) const;
-    bool operator>(const WordDeq& wv) const;
-    bool operator==(const WordDeq& wv) const;
+    bool operator<(const WordVector& wv) const;
+    bool operator>(const WordVector& wv) const;
+    bool operator==(const WordVector& wv) const;
     
     // for use in Knuth-Bendix
-    int  overlap(const WordDeq& wd) const;
-    int  contains(const WordDeq& w) const;
-    bool reduce(const WordDeq& new_rel, size_t old_len, size_t at);
+    int  overlap(const WordVector& wd) const;
+    int  contains(const WordVector& w) const;
+    bool reduce(const WordVector& new_rel, size_t old_len, size_t at);
 
     size_t size() const { return m_word_deq.size(); }
     std::vector<Generator> get_vector() const { return m_word_deq; }
@@ -35,9 +35,9 @@ class Relation
     // constructor
     Relation();
     Relation(const Word* wd);
-    Relation(const WordDeq& wd);
+    Relation(const WordVector& wd);
     Relation(const Word* wd1, const Word* wd2);
-    Relation(const WordDeq& wd1, const WordDeq& wd2);
+    Relation(const WordVector& wd1, const WordVector& wd2);
     // overloaded operators
     bool operator==(const Relation& r) const;
     bool operator<(const Relation& r) const;
@@ -52,23 +52,6 @@ class Relation
 
   // we must have lhs > rhs (hence lhs -> rhs is a Relation)
   private:
-    WordDeq lhs;
-    WordDeq rhs;
-};
-
-class KnuthBendix
-{
-  public:
-    bool   add(Relation r);
-    bool   run_algo();
-    bool   apply_reductions();
-    bool   remove_repeated();
-    bool   remove_trivial();
-    bool   remove_redundant();
-    void   order();
-    size_t size() const { return m_relations.size(); }
-    void   print() const;
-
-  private:
-    std::vector<Relation> m_relations;
+    WordVector lhs;
+    WordVector rhs;
 };

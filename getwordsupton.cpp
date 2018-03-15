@@ -11,27 +11,27 @@ std::vector<Word> get_words_upto_n(const unsigned int n, const std::vector<Word>
 
   //inverse pairs
   std::vector<Generator> R1E1 = {Generator::R1, Generator::E1};
-  WordDeq d_R1E1(R1E1);
+  WordVector d_R1E1(R1E1);
   kb.add(Relation(d_R1E1));
 
   std::vector<Generator> R2E2 = {Generator::R2, Generator::E2};
-  WordDeq d_R2E2(R2E2);
+  WordVector d_R2E2(R2E2);
   kb.add(Relation(d_R2E2));
 
   std::vector<Generator> R3E3 = {Generator::R3, Generator::E3};
-  WordDeq d_R3E3(R3E3);
+  WordVector d_R3E3(R3E3);
   kb.add(Relation(d_R3E3));
 
   std::vector<Generator> E1R1 = {Generator::E1, Generator::R1};
-  WordDeq d_E1R1(E1R1);
+  WordVector d_E1R1(E1R1);
   kb.add(Relation(d_E1R1));
 
   std::vector<Generator> E2R2 = {Generator::E2, Generator::R2};
-  WordDeq d_E2R2(E2R2);
+  WordVector d_E2R2(E2R2);
   kb.add(Relation(d_E2R2));
 
   std::vector<Generator> E3R3 = {Generator::E3, Generator::R3};
-  WordDeq d_E3R3(E3R3);
+  WordVector d_E3R3(E3R3);
   kb.add(Relation(d_E3R3));
 
   while (i < n)

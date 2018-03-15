@@ -214,16 +214,16 @@ int main(int argc, char *argv[])
   const double ref_angle = 2.0 * PI / (double)ref_order;
   const comp_d psi(std::cos(ref_angle / 3.0), std::sin(ref_angle / 3.0));
   const comp_d comp_zero(0.0, 0.0);
-/*
+
   const comp_d rho(1.0 / 2.0, std::sqrt(7.0) / 2.0);
   const comp_d sigma(1.0, 0.0);
   const comp_d tau = sigma;
-*/
 
+/*
   const comp_d rho(1.0, 0.0);
   const comp_d sigma(std::sqrt(2), 0.0);
   const comp_d tau = sigma;
-
+*/
 /*
   const comp_d rho = 2.0 * std::cos(PI / 5.0) * comp_d(std::cos(2.0 * PI / 5.0), std::sin(2.0 * PI / 5.0));
   const comp_d sigma = comp_d(1.0, 0.0);
@@ -295,22 +295,6 @@ int main(int argc, char *argv[])
   std::vector<Generator> vec_E3{Generator::E3};
   Word word_E3(vec_E3, arma::inv(mat_R3), IsomClass::Reflection,
                arma::trace(arma::inv(mat_R3)), (int)ref_order);
-
-  CompMat3 test;
-/*
-  test = arma::trans(mat_R1) * mat_H * mat_R1;
-  std::cout << test - mat_H << "\n";
-  test = arma::trans(mat_R2) * mat_H * mat_R2;
-  std::cout << test - mat_H << "\n";
-  test = arma::trans(mat_R3) * mat_H * mat_R3;
-  std::cout << test - mat_H << "\n";
-*/
-  //std::vector<comp_d> std_vec = {omega, omega, omega};
-  //arma::cx_dvec col_vec(std_vec);
-  //test = arma::trans(col_vec) * mat_H * col_vec;
-  //std::cout << test << "\n";
-
-
   //////////////////////////////////////////////////////////////////////////////
   std::vector<Word> generators;
   generators.reserve(6);
@@ -322,6 +306,31 @@ int main(int argc, char *argv[])
   generators.push_back(word_E3);
 
   KnuthBendix kb;
+
+  // add inverse pairs to knuth bendix class
+  std::vector<Generator> R1E1 = {Generator::R1, Generator::E1};
+  WordVector d_R1E1(R1E1);
+  kb.add(Relation(d_R1E1));
+
+  std::vector<Generator> R2E2 = {Generator::R2, Generator::E2};
+  WordVector d_R2E2(R2E2);
+  kb.add(Relation(d_R2E2));
+
+  std::vector<Generator> R3E3 = {Generator::R3, Generator::E3};
+  WordVector d_R3E3(R3E3);
+  kb.add(Relation(d_R3E3));
+
+  std::vector<Generator> E1R1 = {Generator::E1, Generator::R1};
+  WordVector d_E1R1(E1R1);
+  kb.add(Relation(d_E1R1));
+
+  std::vector<Generator> E2R2 = {Generator::E2, Generator::R2};
+  WordVector d_E2R2(E2R2);
+  kb.add(Relation(d_E2R2));
+
+  std::vector<Generator> E3R3 = {Generator::E3, Generator::R3};
+  WordVector d_E3R3(E3R3);
+  kb.add(Relation(d_E3R3));
 
   std::cout << "Checking for braid relations in the group presentation\n";
   get_braid_relns(generators, kb);
@@ -352,16 +361,5 @@ int main(int argc, char *argv[])
   kb.run_algo();
   std::cout << "Total relations found " << kb.size() <<"\n";
   kb.print();
-
-if (word_R1 * word_R3 < word_R2)
-  std::cout << "AAA\n";
-else
-  std::cout << "BBB\n";
-/*
-  arma::cx_dvec base_vector = get_neg_evec(mat_S, mat_H);
-  test = arma::trans(base_vector) * mat_H * base_vector;
-  std::cout << test << "\n";
-  build_f_domain(base_vector, relevant_words, mat_H);
-*/
   return 0;
 };

@@ -2,11 +2,11 @@
 
 Relation::Relation()
 {
-  lhs = WordDeq();
-  rhs = WordDeq();
+  lhs = WordVector();
+  rhs = WordVector();
 }
 
-Relation::Relation(const WordDeq& w1, const WordDeq& w2)
+Relation::Relation(const WordVector& w1, const WordVector& w2)
 {
   if (w1 == w2)
     return;  //without intialising anything?
@@ -21,15 +21,15 @@ Relation::Relation(const WordDeq& w1, const WordDeq& w2)
   }  
 }
 
-Relation::Relation(const WordDeq& w1)
+Relation::Relation(const WordVector& w1)
 {
   lhs = w1; 
 }
 
 Relation::Relation(const Word* wd)
 {
-  WordDeq w1(wd);
-  WordDeq w2;
+  WordVector w1(wd);
+  WordVector w2;
 
   if (w1 == w2)
     return;  //without intialising anything?
@@ -46,8 +46,8 @@ Relation::Relation(const Word* wd)
 
 Relation::Relation(const Word* wd1, const Word* wd2)
 {
-  WordDeq w1(wd1);
-  WordDeq w2(wd2);
+  WordVector w1(wd1);
+  WordVector w2(wd2);
 
   if (w1 == w2)
     return;  //without intialising anything?
@@ -84,13 +84,13 @@ bool Relation::reduce(const Relation& rd, bool is_left)
     int index = lhs.contains(rd.lhs);
     if (index >= 0)
     {
-      std::cout << "+-+-+-+- left +-+-+-+-+\n";
-      print(); rd.print();
+//      std::cout << "+-+-+-+- left +-+-+-+-+\n";
+//      print(); rd.print();
       lhs.reduce(rd.rhs, rd.lhs.size(), (size_t)index);
       if (lhs < rhs)
         std::swap(lhs, rhs);
-      print();
-      std::cout << "+-+-+-+-+-+-+-+-+-+-+-+\n";
+//      print();
+//      std::cout << "+-+-+-+-+-+-+-+-+-+-+-+\n";
       return true;
     }
   }
@@ -99,13 +99,13 @@ bool Relation::reduce(const Relation& rd, bool is_left)
     int index = rhs.contains(rd.lhs);
     if (index >= 0)
     {
-      std::cout << "+-+-+- right -+-+-+-+-+\n";
-      print(); rd.print();
+//      std::cout << "+-+-+- right -+-+-+-+-+\n";
+//      print(); rd.print();
       rhs.reduce(rd.rhs, rd.lhs.size(), (size_t)index);
       if (lhs < rhs)
         std::swap(lhs, rhs);
-      print(); 
-      std::cout << "+-+-+-+-+-+-+-+-+-+-+-+\n";
+//      print(); 
+//      std::cout << "+-+-+-+-+-+-+-+-+-+-+-+\n";
       return true;
     }    
   }
@@ -153,21 +153,21 @@ Relation Relation::k_b(const Relation& r, size_t overlap) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-WordDeq::WordDeq()
+WordVector::WordVector()
 {
   std::vector<Generator> id_deq;
   m_word_deq = id_deq;
 }
 
-WordDeq::WordDeq(const std::vector<Generator>& word_vec) :
+WordVector::WordVector(const std::vector<Generator>& word_vec) :
   m_word_deq(word_vec) {}
 
-WordDeq::WordDeq(const Word* wd)
+WordVector::WordVector(const Word* wd)
 {
   m_word_deq =  wd->get_gen_vec(); 
 }
 
-bool WordDeq::operator<(const WordDeq& w) const
+bool WordVector::operator<(const WordVector& w) const
 {
   if (m_word_deq.size() < w.size())
     return true;
@@ -189,7 +189,7 @@ bool WordDeq::operator<(const WordDeq& w) const
 }
 
 
-bool WordDeq::operator>(const WordDeq& w) const
+bool WordVector::operator>(const WordVector& w) const
 {
   if (m_word_deq.size() > w.size())
     return true;
@@ -210,7 +210,7 @@ bool WordDeq::operator>(const WordDeq& w) const
   return false;
 }
 
-bool WordDeq::operator==(const WordDeq& w) const
+bool WordVector::operator==(const WordVector& w) const
 {
   if (m_word_deq.size() != w.size())
     return false;
@@ -226,7 +226,7 @@ bool WordDeq::operator==(const WordDeq& w) const
   return true;
 }
 // template this out TODO
-std::string WordDeq::as_string() const
+std::string WordVector::as_string() const
 {
   if (m_word_deq.size() == 0) 
     return "e";
@@ -250,7 +250,7 @@ std::string WordDeq::as_string() const
   return word_str;
 }
 
-bool WordDeq::reduce(const WordDeq& new_rel, size_t old_len, size_t at)
+bool WordVector::reduce(const WordVector& new_rel, size_t old_len, size_t at)
 {
   // remove the old word    
   m_word_deq.erase(m_word_deq.begin() + at, 
@@ -265,7 +265,7 @@ bool WordDeq::reduce(const WordDeq& new_rel, size_t old_len, size_t at)
   return true;
 }
 
-int WordDeq::contains(const WordDeq& w) const
+int WordVector::contains(const WordVector& w) const
 {
   // if w is the identity crash!
   if (w.size() == 0)
@@ -290,7 +290,7 @@ int WordDeq::contains(const WordDeq& w) const
   return -3;
 }
 
-int WordDeq::overlap(const WordDeq& w) const
+int WordVector::overlap(const WordVector& w) const
 {
   if ((w.size() == 0) | (this->size() == 0))
     return -1;
@@ -325,198 +325,3 @@ int WordDeq::overlap(const WordDeq& w) const
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-bool KnuthBendix::add(Relation r)
-{
-  for (size_t i = 0; i < m_relations.size(); ++i)
-    if ((m_relations[i] == r) || 
-        r.is_redundant(m_relations[i]) ||
-        r.is_trivial())
-      return false;
-
-  m_relations.push_back(r);
-  return true;
-}
-
-void KnuthBendix::print() const
-{
-  for (size_t i = 0; i < m_relations.size(); ++i)
-     m_relations[i].print();
-}
-
-bool KnuthBendix::remove_repeated()
-{
-  bool removed = false;
-  bool carry_on = true;
-  while (carry_on)
-  {
-    carry_on = false;
-    for (size_t i = 0; i < m_relations.size(); ++i)
-    {
-      for (size_t j = i + 1; j < m_relations.size(); ++j)
-      {
-        if (m_relations[i] == m_relations[j])
-        {
-          carry_on = true;
-          removed = true;
-          m_relations.erase(m_relations.begin()+j);
-          break;
-        }
-      }
-    }
-  }
-  return removed;
-}
-
-bool KnuthBendix::remove_trivial()
-{
-  bool removed = false;
-  bool carry_on = true;
-  while (carry_on)
-  {
-    carry_on = false;
-    for (size_t i = 0; i < m_relations.size(); ++i)
-    {
-      if (m_relations[i].is_trivial())
-      {
-        carry_on = true;
-        removed = true;
-        m_relations.erase(m_relations.begin()+i);
-        break;
-      }
-    }
-  }
-  return removed;
-}
-
-bool KnuthBendix::remove_redundant()
-{
-  bool removed = false;
-  bool carry_on = true;  
-  while (carry_on)
-  { 
-    carry_on = false;
-    for (size_t i = 0; i < m_relations.size(); ++i)
-    {
-      for (size_t j = 0; j < m_relations.size(); ++j)
-      {
-        if (i == j)
-          continue;
-
-        if (m_relations[i].is_redundant(m_relations[j]))
-        {
-          carry_on = true;
-          removed = true;
-          m_relations.erase(m_relations.begin()+i);
-          break;          
-        }
-      }
-      if (carry_on)
-        break;
-    }
-  }
-  return removed;
-}
-
-bool KnuthBendix::apply_reductions()
-{
-  bool carry_on = true;  
-  bool removed = false;
-  while (carry_on)
-  { 
-    carry_on = false;
-    for (size_t i = 0; i < m_relations.size(); ++i)
-    {
-      for (size_t j = 0; j < m_relations.size(); ++j)
-      {
-        if (m_relations[i] == m_relations[j])
-          continue;
-
-//        carry_on |= m_relations[i].reduce(m_relations[j], true);
-        if (m_relations[i].reduce(m_relations[j], false))
-        {
-          carry_on = true;
-          removed = true;
-          break;                
-        }
-      }
-      if (carry_on)
-        break;
-    }
-//    remove_redundant();
-//    return false;
-//    std::cout << size() << "\n";
-//    std::cout << "******************************************\n";
-  }
-  return removed;
-}
-
-void KnuthBendix::order()
-{
-  std::sort(m_relations.begin(), m_relations.end());
-}
-
-bool KnuthBendix::run_algo()
-{
-  bool carry_on = true;
-  while (carry_on)
-  {
-//    print();
-    carry_on = false;
-    std::cout << "===================================================\n";
-    carry_on |= apply_reductions();
-//    print();
-    //step 1 reduce all word where possible
-    carry_on |= remove_redundant();
-    // remove repeated relations
-    carry_on |= remove_repeated();
-    // remove A -> A
-    carry_on |= remove_trivial();
-    // put the realtions in smallest to largest order
-    order();
-  }
-  std::cout << "done preprocessing Knuth-Bendix\n";
-
-
-  carry_on = true;
-  size_t count = 0;
-  while (carry_on || count < 10)
-  {
-    carry_on = false;
-//if (m_relations.size() > 200)
-//  return true;
-    for (size_t i = 0; i < m_relations.size(); ++i)
-    {
-      for (size_t j = 0; j < m_relations.size(); ++j)
-      {
-        int overlap = m_relations[i].get_overlap(m_relations[j]);
-        if (overlap > 0)
-        {
-          Relation new_rel = m_relations[i].k_b(m_relations[j], (size_t)overlap);
-          carry_on |= add(new_rel);
-//          if (carry_on)
-//            new_rel.print();
-
-          if (carry_on)
-            break;
-        }
-      }
-      if (carry_on)
-        break;
-    } 
-    carry_on |= apply_reductions();
-    // remove relations where the lhs contains a the lhs of another
-    carry_on |= remove_redundant();
-    // remove repeated relations
-    carry_on |= remove_repeated();
-    // remove A -> A
-    carry_on |= remove_trivial();
-    ++count;
-
-    if (carry_on)
-    {
-      std::cout << m_relations.size() << " (" << count << ")\n";
-      order();
-    }
-  }
-  return true;
-}

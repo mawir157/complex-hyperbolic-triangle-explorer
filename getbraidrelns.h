@@ -1,7 +1,8 @@
 #pragma once
 
 #include "word.h"
-#include "reduction.h"
+//#include "reduction.h"
+#include "knuth_bendix.h"
 
 struct Pair 
 {
