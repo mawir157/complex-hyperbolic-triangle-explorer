@@ -137,7 +137,6 @@ bool KnuthBendix::run_algo()
   {
 //    print();
     carry_on = false;
-    std::cout << "===================================================\n";
     carry_on |= apply_reductions();
 //    print();
     //step 1 reduce all word where possible

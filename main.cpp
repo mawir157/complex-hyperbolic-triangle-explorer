@@ -61,18 +61,6 @@ auto start = std::chrono::high_resolution_clock::now();
   reduced_words.reserve(seen_words.size());
   for (size_t i = 0; i < seen_words.size(); ++i)
   {
-/*
-size_t step_size = std::max(1, int(seen_words.size() / 100));
-if (i % step_size == 1)
-{
-auto finish = std::chrono::high_resolution_clock::now();
-std::chrono::duration<double> elapsed = finish - start;
-std::cout << 100.0 * (double)i / (double)seen_words.size() << " percent complete; ";
-std::cout << "Time so far - " << elapsed.count() << " seconds; ";
-std::cout << "Expected time to completion "
-          << elapsed.count() *(-1.0 + (double)seen_words.size() / std::max((double)i, 1e-5)) << " seconds \n";
-}
-*/
     Word comp_word = seen_words[i];
     if (comp_word.get_isom_class() == IsomClass::Loxodromic && !keep_loxo)
       continue;
@@ -126,18 +114,14 @@ std::vector<Word> kill_conjugates(const std::vector<Word>& seen_words,
     const Word comp_word = seen_words[i];
     Word conj_test_word = seen_words[i];
     bool matched = false;
-//std::cout << comp_word.as_string() << "\n";
     for (size_t j = 0; j < reduced_words.size(); ++j)
     {
       Word test_word = reduced_words[j];
       size_t rot_len = conj_test_word.word_length();
-//std::cout << "\t" << test_word.as_string() << "\n";
       for (size_t k = 0; k < rot_len; ++k)
       {
         const Word last_char = get_generator(conj_test_word.last_element(), generators);          
         conj_test_word = conjugate(&conj_test_word, &last_char);
-//std::cout << "\t\t" << conj_test_word.as_string() << " "
-//          << conj_test_word.is_equal(&test_word, false) << "\n";
         if (conj_test_word.is_equal(&test_word)) { matched = true; break; }
         if (conj_test_word.is_equal_inverse(&test_word)) { matched = true; break; }
       }
@@ -210,7 +194,6 @@ int main(int argc, char *argv[])
   // Set up the generators R1, R2, R3, E1, E2, E3
   //
   //
-//  const unsigned int ref_order = 4;
   const double ref_angle = 2.0 * PI / (double)ref_order;
   const comp_d psi(std::cos(ref_angle / 3.0), std::sin(ref_angle / 3.0));
   const comp_d comp_zero(0.0, 0.0);

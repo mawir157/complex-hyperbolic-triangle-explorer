@@ -8,8 +8,8 @@ class WordVector
   public:
     // constructors
     WordVector();
-    WordVector(const std::vector<Generator>& word_vec);
-    WordVector(const Word* wd);
+    explicit WordVector(const std::vector<Generator>& word_vec);
+    explicit WordVector(const Word* wd);
 
     // overloaded operators
     bool operator<(const WordVector& wv) const;
@@ -34,8 +34,8 @@ class Relation
   public:
     // constructor
     Relation();
-    Relation(const Word* wd);
-    Relation(const WordVector& wd);
+    explicit Relation(const Word* wd);
+    explicit Relation(const WordVector& wd);
     Relation(const Word* wd1, const Word* wd2);
     Relation(const WordVector& wd1, const WordVector& wd2);
     // overloaded operators
@@ -50,7 +50,6 @@ class Relation
     int  get_overlap(const Relation& rhs) const;
     Relation k_b(const Relation& r, size_t overlap) const;
 
-  // we must have lhs > rhs (hence lhs -> rhs is a Relation)
   private:
     WordVector lhs;
     WordVector rhs;

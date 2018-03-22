@@ -1,10 +1,8 @@
 #include "reduction.h"
 
-Relation::Relation()
-{
-  lhs = WordVector();
-  rhs = WordVector();
-}
+Relation::Relation() :
+    lhs(WordVector())
+  , rhs(WordVector()) {}
 
 Relation::Relation(const WordVector& w1, const WordVector& w2)
 {
@@ -21,10 +19,8 @@ Relation::Relation(const WordVector& w1, const WordVector& w2)
   }  
 }
 
-Relation::Relation(const WordVector& w1)
-{
-  lhs = w1; 
-}
+Relation::Relation(const WordVector& w1) :
+    lhs(w1) {}
 
 Relation::Relation(const Word* wd)
 {
@@ -147,25 +143,24 @@ Relation Relation::k_b(const Relation& r, size_t overlap) const
   for (size_t i = 0; i < R_2.size(); ++i)
     new_rhs.push_back(R_2[i]);
 
-  Relation new_relation(new_lhs, new_rhs);
+  WordVector lhs_word_vec = WordVector(new_lhs);
+  WordVector rhs_word_vec = WordVector(new_rhs);
+
+  Relation new_relation(lhs_word_vec, rhs_word_vec);
 
   return new_relation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-WordVector::WordVector()
-{
-  std::vector<Generator> id_deq;
-  m_word_deq = id_deq;
-}
+WordVector::WordVector() : 
+  m_word_deq(0) {}
+
 
 WordVector::WordVector(const std::vector<Generator>& word_vec) :
   m_word_deq(word_vec) {}
 
-WordVector::WordVector(const Word* wd)
-{
-  m_word_deq =  wd->get_gen_vec(); 
-}
+WordVector::WordVector(const Word* wd) :
+  m_word_deq(wd->get_gen_vec()) {}
 
 bool WordVector::operator<(const WordVector& w) const
 {
@@ -298,12 +293,10 @@ int WordVector::overlap(const WordVector& w) const
   std::vector<Generator> left_vec = m_word_deq;
   std::vector<Generator> right_vec = w.get_vector();
 
-  size_t overlap = 0;
   size_t max_overlap = std::min(left_vec.size(), right_vec.size());
-  size_t best_overlap = 0;
   size_t best_overlap_index = 0;
 
-  for (overlap = 1; overlap < max_overlap; ++overlap)
+  for (size_t overlap = 1; overlap < max_overlap; ++overlap)
   {
     size_t l_start =  left_vec.size() - overlap;
     unsigned int count = 0;
@@ -317,7 +310,6 @@ int WordVector::overlap(const WordVector& w) const
     }
     if (count == overlap)
     {
-        best_overlap = overlap;
         best_overlap_index = l_start;
     }
   }

@@ -11,7 +11,7 @@ class Word
     Word(std::vector<Generator> gen_vec, CompMat3 matrix, IsomClass iso_class,
          comp_d trace, int order);
     // construct from vector
-    Word(std::vector<Generator> gen_vec);
+    explicit Word(std::vector<Generator> gen_vec);
 
     //
     std::string as_string() const;
@@ -55,4 +55,4 @@ class Word
 };
 
 Word conjugate(const Word *base_word, const Word *conj_word);
-Word power(const Word base_word, const unsigned int p);
+Word power(const Word& base_word, const unsigned int p);

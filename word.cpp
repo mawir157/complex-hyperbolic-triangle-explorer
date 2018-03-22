@@ -8,15 +8,12 @@ Word::Word(std::vector<Generator> gen_vec, CompMat3 matrix,
   , m_trace(trace)
   , m_order(order) {}
 
-Word::Word()   
-{
-  std::vector<Generator> id_vector;
-  m_gen_vec = id_vector;
-  m_matrix = arma::eye<CompMat3>(3,3);
-  m_iso_class = IsomClass::Identity;
-  m_trace = comp_d(3.0, 0.0);
-  m_order = 1;
-}
+Word::Word() :
+    m_gen_vec(0)
+  , m_matrix(arma::eye<CompMat3>(3,3))
+  , m_iso_class(IsomClass::Identity)
+  , m_trace(comp_d(3.0, 0.0))
+  , m_order(1) {}
 
 std::string Word::as_string() const
 {
@@ -155,11 +152,11 @@ void Word::simplify_gen_vec()
 void Word::conjugate(const Word *P)
 {
 
-    CompMat3               m_matrix;
-    std::vector<Generator> m_gen_vec;
-    IsomClass              m_iso_class;
-    comp_d                 m_trace;
-    int                    m_order;
+//    CompMat3               m_matrix;
+//    std::vector<Generator> m_gen_vec;
+//    IsomClass              m_iso_class;
+//    comp_d                 m_trace;
+//    int                    m_order;
   // create the new isometry matrix
   m_matrix = P->get_matrix() * m_matrix * arma::inv(P->get_matrix());
   // the isoclass, trace and order do not change
@@ -184,7 +181,7 @@ void Word::conjugate(const Word *P)
   simplify_gen_vec();
 }
 
-Word power(const Word base_word, const unsigned int p)
+Word power(const Word& base_word, const unsigned int p)
 {
   Word new_word = Word();
   for (unsigned int i=0; i < p; ++i)
@@ -233,7 +230,6 @@ Word Word::operator*(const Word& wd) const
   IsomClass i_class = mat_iso_class(new_mat);
 
   unsigned int order = 0;
-  int comp = 0;
   if (i_class == IsomClass::Loxodromic || i_class == IsomClass::Parabolic)
     order = -1;
   else if (i_class == IsomClass::Identity)

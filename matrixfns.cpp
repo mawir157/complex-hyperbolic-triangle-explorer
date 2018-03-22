@@ -1,6 +1,6 @@
 #include "matrixfns.h"
 
-void print_e_structure(const CompMat3& matrix, const std::string Name, const double tol)
+void print_e_structure(const CompMat3& matrix, const std::string& Name, const double tol)
 {
   arma::cx_vec eigvals = arma::eig_gen( matrix );
   std::cout << "eigenvalues of " << Name << " = (" 
@@ -187,7 +187,7 @@ inline double frac_part(const double d)
   return std::abs(d - std::round(d));
 }
 
-bool eq_trace(const comp_d tr_1, const comp_d tr_2)
+bool eq_trace(const comp_d& tr_1, const comp_d& tr_2)
 {
 
   if (jmt_abs_fast(tr_1 - tr_2) < TOL)
