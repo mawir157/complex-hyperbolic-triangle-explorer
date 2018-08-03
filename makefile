@@ -1,4 +1,4 @@
-appname := chtge
+appname := chtge.out
 
 CXX := g++
 CXXFLAGS := -std=c++11
