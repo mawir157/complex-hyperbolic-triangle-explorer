@@ -1,8 +1,12 @@
+// g++ -o test.out *.cpp -O1 -larmadillo -std=c++11
+
 #include "getwordsupton.h"
 #include "getbraidrelns.h"
 #include "f_domain.h"
 
 #include "reduction.h"
+
+#define DEBUG(x) std::cout << x << "\n";
 
 Word get_generator(const Generator gen, const std::vector<Word>& generators)
 {
@@ -14,7 +18,9 @@ Word get_generator(const Generator gen, const std::vector<Word>& generators)
   return Word();
 }
 
-std::vector<Word> is_power(const std::vector<Word>& seen_words, const unsigned int max_power=100, const bool v=true)
+std::vector<Word> is_power(const std::vector<Word>& seen_words,
+                           const unsigned int max_power=100,
+                           const bool v=true)
 {
   std::vector<Word> add_words;
   for (size_t i = 0; i < seen_words.size(); ++i)
@@ -196,6 +202,7 @@ int main(int argc, char *argv[])
   //
   const double ref_angle = 2.0 * PI / (double)ref_order;
   const comp_d psi(std::cos(ref_angle / 3.0), std::sin(ref_angle / 3.0));
+  const comp_d conj_root_psi(std::cos(-ref_angle / 6.0), std::sin(-ref_angle / 6.0));
   const comp_d comp_zero(0.0, 0.0);
 
   const comp_d rho(1.0 / 2.0, std::sqrt(7.0) / 2.0);
@@ -228,10 +235,17 @@ int main(int argc, char *argv[])
   const comp_d sigma = 2.0 * std::cos(PI / k);
   const comp_d tau = sigma;
 */
+/*
+  const comp_d u(std::cos(2.0 * PI / 7.0), std::sin(2.0 * PI / 7.0));
+  const comp_d rho = u + u*u + u*u*u*u;
+  const comp_d sigma = u*u*u*u*u;
+  const comp_d tau = sigma;
+*/
+
   const comp_d alpha = std::sqrt(2.0 - 2.0 * std::real(psi * psi * psi));
-  const comp_d beta_1 = comp_d(0.0, -1.0) * std::sqrt(std::conj(psi)) * rho;
-  const comp_d beta_2 = comp_d(0.0, -1.0) * std::sqrt(std::conj(psi)) * sigma;
-  const comp_d beta_3 = comp_d(0.0, -1.0) * std::sqrt(std::conj(psi)) * tau;
+  const comp_d beta_1 = comp_d(0.0, -1.0) * conj_root_psi * rho;
+  const comp_d beta_2 = comp_d(0.0, -1.0) * conj_root_psi * sigma;
+  const comp_d beta_3 = comp_d(0.0, -1.0) * conj_root_psi * tau;
   CompMat3 mat_H(3, 3);
   mat_H << alpha << beta_1 << std::conj(beta_3) << arma::endr
         << std::conj(beta_1) << alpha << beta_2 << arma::endr
@@ -243,10 +257,16 @@ int main(int argc, char *argv[])
         << std::conj(psi) << 0.0 << 0.0 << arma::endr
         << 0 << std::conj(psi) * std::sqrt(2 * std::real(rho)) << -1.0 << arma::endr;
 
+  ref_order = 2;
+  const comp_d u(std::cos(2.0 * PI / 7.0), std::sin(2.0 * PI / 7.0));
+
   CompMat3 mat_R1(3, 3);
   mat_R1 << psi * psi << rho            << -psi * std::conj(tau) << arma::endr
          << 0.0       << std::conj(psi) << 0.0                   << arma::endr
          << 0.0       << 0.0            << std::conj(psi)        << arma::endr;
+  // mat_R1 << 1.0 << u + u*u + u*u*u*u << u*u  << arma::endr
+  //        << 0.0 << -1.0              << 0.0  << arma::endr
+  //        << 0.0 << 0.0               << -1.0 << arma::endr;
   std::vector<Generator> vec_R1{Generator::R1};
   Word word_R1(vec_R1, mat_R1, IsomClass::Reflection,
                arma::trace(mat_R1), (int)ref_order);
@@ -259,6 +279,9 @@ int main(int argc, char *argv[])
   mat_R2 << std::conj(psi)        << 0.0       << 0.0            << arma::endr
          << -psi * std::conj(rho) << psi * psi << sigma          << arma::endr
          << 0.0                   << 0.0       << std::conj(psi) << arma::endr;
+  // mat_R2 << -1.0                         << 0.0 << 0.0       << arma::endr
+  //        << std::conj(u + u*u + u*u*u*u) << 1.0 << u*u*u*u*u << arma::endr
+  //        << 0.0                          << 0.0 << -1.0      << arma::endr;
   std::vector<Generator> vec_R2{Generator::R2};
   Word word_R2(vec_R2, mat_R2, IsomClass::Reflection,
                arma::trace(mat_R2), (int)ref_order);
@@ -271,6 +294,9 @@ int main(int argc, char *argv[])
   mat_R3 << std::conj(psi) << 0.0                     << 0.0       << arma::endr
          << 0.0            << std::conj(psi)          << 0.0       << arma::endr
          << tau            << -psi * std::conj(sigma) << psi * psi << arma::endr;
+  // mat_R3 << -1.0      << 0.0  << 0.0 << arma::endr
+  //        << 0.0       << -1.0 << 0.0 << arma::endr
+  //        << u*u*u*u*u << u*u  << 1.0 << arma::endr;
   std::vector<Generator> vec_R3{Generator::R3};
   Word word_R3(vec_R3, mat_R3, IsomClass::Reflection,
                arma::trace(mat_R3), (int)ref_order);
@@ -325,24 +351,27 @@ int main(int argc, char *argv[])
   auto finish = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = finish - start;
   std::cout << "Found " << unique_words.size() << " words. Elapsed time: " << elapsed.count() << " s\n";
-//  print_word_vector(unique_words, false); //print_c_and_p(unique_words);
   std::cout << "Looking for relevant relations in group presentation\n";
   std::vector<Word> relevant_words = reduce_words(unique_words, generators);
   std::cout << relevant_words.size() << "\n";
-//  print_word_vector(relevant_words, false);
 
   std::cout << "Removing conjugate words from group presentation\n";
   relevant_words = kill_conjugates(relevant_words, generators);
-//  print_word_vector(relevant_words, false);
 
   std::cout << "Removing power words from group presentation\n";
   relevant_words = is_power(relevant_words, 100, false);
   print_word_vector(relevant_words, false); //print_c_and_p(relevant_words);
 
-//  kb.print();
-  std::cout << "Running Knuth-bendix\n";
-  kb.run_algo();
-  std::cout << "Total relations found " << kb.size() <<"\n";
-  kb.print();
+  // std::cout << "Running Knuth-bendix\n";
+  // kb.run_algo();
+  // std::cout << "Total relations found " << kb.size() <<"\n";
+  // kb.print();
+
+  // arma::cx_dvec base_vector(3);
+  // base_vector << 1.0 << arma::endr
+  //             << 1.0 << arma::endr
+  //             << 1.0 << arma::endr;
+  point base_vector = get_neg_evec(mat_H, mat_H);
+  build_f_domain(base_vector, unique_words, mat_H);
   return 0;
 };

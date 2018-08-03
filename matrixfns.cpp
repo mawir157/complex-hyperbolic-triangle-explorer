@@ -22,13 +22,8 @@ void print_e_structure(const CompMat3& matrix, const std::string& Name, const do
   std::cout << Name << " has signature (" << pos_evals << ", " << neg_evals << ")\n";
   std::cout << Name << " has Goldman trace formula " << goldman(matrix) << "\n";
 }
-/*
-arma::cx_dvec get_evals(const CompMat3& matrix)
-{
 
-}
-*/
-arma::cx_dvec get_neg_evec(const CompMat3& M, const CompMat3& H)
+point get_neg_evec(const CompMat3& M, const CompMat3& H)
 {
   arma::cx_vec eigval;
   arma::cx_mat eigvec;
@@ -214,4 +209,25 @@ Generator inverse(const Generator gen)
       case Generator::E3: return Generator::R3; break;
       case Generator::ID: return Generator::ID; break;
     }
+}
+
+point get_polar(const point& p1, const point& p2, const CompMat3& H)
+{
+  point polar_vector;
+  return polar_vector;
+}
+
+point normalize_point(const point& p, const int index)
+{
+  size_t size_index = 0;
+  if ((index <  0) || (index > p.size()))
+    size_index = 0;
+  else
+    size_index = (size_t)index;
+
+  point norm_point(3);
+  for (size_t i = 0; i < norm_point.size(); ++i)
+    norm_point[i] = p[i] / p[size_index];
+
+  return norm_point;
 }

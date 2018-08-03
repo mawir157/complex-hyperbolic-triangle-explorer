@@ -12,4 +12,6 @@ class F_Domain
 }
 */
 
-void build_f_domain(arma::cx_dvec& base_vector, std::vector<Word> words, CompMat3 H);
+void build_f_domain(const point& base_vector,
+                    const std::vector<Word>& words,
+                    const CompMat3& H);

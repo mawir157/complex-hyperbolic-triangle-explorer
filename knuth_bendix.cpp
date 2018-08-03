@@ -133,12 +133,11 @@ void KnuthBendix::order()
 bool KnuthBendix::run_algo()
 {
   bool carry_on = true;
+  size_t super_init = m_relations.size();
   while (carry_on)
   {
-//    print();
     carry_on = false;
     carry_on |= apply_reductions();
-//    print();
     //step 1 reduce all word where possible
     carry_on |= remove_redundant();
     // remove repeated relations
@@ -161,7 +160,7 @@ bool KnuthBendix::run_algo()
     size_t init_i_loop = m_relations.size();
     for (size_t i = 0; i < init_i_loop; ++i)
     {
-      std::cout << m_relations.size() << " | " << i << "\n";
+//      std::cout << m_relations.size() << " | " << i << "\n";
       size_t init_j_loop = m_relations.size();
       for (size_t j = 0; j < init_j_loop; ++j)
       {
@@ -189,7 +188,8 @@ bool KnuthBendix::run_algo()
 
     if (carry_on)
     {
-      std::cout << m_relations.size() << " (" << count << ")\n";
+      std::cout << m_relations.size() << " (" << count << ") [" 
+                << (int)m_relations.size() - (int)super_init << "]\n";
       order();
     }
   }
