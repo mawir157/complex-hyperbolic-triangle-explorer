@@ -32,7 +32,7 @@ class ComFunDomain
 
   private:
     const Word m_123;
-    std::set<Face> ms_faces;
+    std::vector<Face> ms_faces;
     bool seen_before(const Face& f) const;
 
     bool abc_bca_rule(const Face& f) const;

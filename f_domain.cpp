@@ -32,7 +32,7 @@ bool ComFunDomain::add_face(const Face& f)
   if (is_in)
     return false;
 
-  ms_faces.insert(f);
+  ms_faces.push_back(f);
   return true;
 }
 
@@ -106,9 +106,9 @@ bool ComFunDomain::match_C_line(const Face& f)
 void ComFunDomain::build_f_domain()
 {
   // check if it is in the set
-  std::set<Face> prev_faces = ms_faces;
+  std::vector<Face> prev_faces = ms_faces;
 
-  std::set<Face>::iterator cur_face;
+  std::vector<Face>::iterator cur_face;
   bool changed = false;
   for (cur_face = prev_faces.begin(); cur_face != prev_faces.end(); ++cur_face)
   {
