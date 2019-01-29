@@ -190,21 +190,21 @@ Word power(const Word& base_word, const unsigned int p)
   return new_word;
 }
 
-Word conjugate(const Word *base_word, const Word *conj_word)
+Word conjugate(const Word& base_word, const Word& conj_word)
 {
-  CompMat3 new_mat = conj_word->get_matrix() * 
-                     base_word->get_matrix() * 
-                     arma::inv(conj_word->get_matrix());
+  CompMat3 new_mat = conj_word.get_matrix() * 
+                     base_word.get_matrix() * 
+                     arma::inv(conj_word.get_matrix());
   // the isoclass, trace and order do not change
-  IsomClass i_class = base_word->get_isom_class();
-  unsigned int order = base_word->get_order();
-  comp_d trace = base_word->get_trace();
+  IsomClass i_class = base_word.get_isom_class();
+  unsigned int order = base_word.get_order();
+  comp_d trace = base_word.get_trace();
 
-  std::vector<Generator> base_vector = base_word->get_gen_vec();
-  std::vector<Generator> conj_vector = conj_word->get_gen_vec();
+  std::vector<Generator> base_vector = base_word.get_gen_vec();
+  std::vector<Generator> conj_vector = conj_word.get_gen_vec();
   std::vector<Generator> new_vec;
 
-  new_vec.reserve(base_vector.size() + 2 * conj_word->get_gen_vec().size());
+  new_vec.reserve(base_vector.size() + 2 * conj_word.get_gen_vec().size());
 
   for (size_t i = 0; i < conj_vector.size(); ++i)
     new_vec.push_back(conj_vector[i]);

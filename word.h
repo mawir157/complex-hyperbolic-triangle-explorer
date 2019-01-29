@@ -54,5 +54,5 @@ class Word
     int                    m_order;
 };
 
-Word conjugate(const Word *base_word, const Word *conj_word);
+Word conjugate(const Word& base_word, const Word& conj_word);
 Word power(const Word& base_word, const unsigned int p);

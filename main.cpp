@@ -75,14 +75,14 @@ auto start = std::chrono::high_resolution_clock::now();
            comp_word.word_length() > 0)
     {
       Word P = get_generator(inverse(comp_word.first_element()), generators);
-      comp_word = conjugate(&comp_word, &P);
+      comp_word = conjugate(comp_word, P);
     }
 
     size_t rot = comp_word.word_length();
     for (size_t i = 0; i < rot; ++i)
     {
       Word P = get_generator(inverse(comp_word.first_element()), generators);
-      comp_word = conjugate(&comp_word, &P);     
+      comp_word = conjugate(comp_word, P);     
     }
 
     bool matched = false;
@@ -96,7 +96,7 @@ auto start = std::chrono::high_resolution_clock::now();
       // is it equal to a the conjugate of a seen word or the conjugate of an inverse of a seen word
       for (size_t k = 0; k < generators.size(); ++k)
       {
-        const Word conj_test_word = conjugate(&test_word, &generators[k]);
+        const Word conj_test_word = conjugate(test_word, generators[k]);
         if (comp_word.is_equal(&conj_test_word)) { matched = true; break; }
         if (comp_word.is_equal_inverse(&conj_test_word)) { matched = true; break; }
       }
@@ -127,7 +127,7 @@ std::vector<Word> kill_conjugates(const std::vector<Word>& seen_words,
       for (size_t k = 0; k < rot_len; ++k)
       {
         const Word last_char = get_generator(conj_test_word.last_element(), generators);          
-        conj_test_word = conjugate(&conj_test_word, &last_char);
+        conj_test_word = conjugate(conj_test_word, last_char);
         if (conj_test_word.is_equal(&test_word)) { matched = true; break; }
         if (conj_test_word.is_equal_inverse(&test_word)) { matched = true; break; }
       }
@@ -371,7 +371,5 @@ int main(int argc, char *argv[])
   // base_vector << 1.0 << arma::endr
   //             << 1.0 << arma::endr
   //             << 1.0 << arma::endr;
-  point base_vector = get_neg_evec(mat_H, mat_H);
-  build_f_domain(base_vector, unique_words, mat_H);
   return 0;
 };

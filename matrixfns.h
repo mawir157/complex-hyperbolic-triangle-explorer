@@ -7,6 +7,7 @@
 #include <string>
 #include <cmath>
 #include <chrono>
+#include <set>
 
 typedef std::complex<double> comp_d;
 typedef arma::Mat<comp_d> CompMat3;
