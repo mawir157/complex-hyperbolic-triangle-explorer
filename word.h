@@ -17,9 +17,9 @@ class Word
     std::string as_string() const;
 
     // check if it is equal to another Word
-    bool is_equal(const Word *wd, const bool debug=false) const;
+    bool is_equal(const Word& wd, const bool debug=false) const;
     // check if a word is equal to the inverse of another word
-    bool is_equal_inverse(const Word *wd, const bool debug=false) const;
+    bool is_equal_inverse(const Word& wd, const bool debug=false) const;
 
     // get the last generator of the word
     Generator last_element() const;

@@ -2,6 +2,7 @@
 
 #include "matrixfns.h"
 #include "word.h"
+#include "getbraidrelns.h"
 
 class Face
 {
@@ -13,6 +14,9 @@ class Face
     const Word m_word_side_c;
     bool m_face_matched;
     bool m_side_paired;
+    const int m_braid_order;
+
+    std::string as_string() const;
 
   private:
 
@@ -27,8 +31,9 @@ class ComFunDomain
 {
   public:
     ComFunDomain(const Word& centre);
-    void build_f_domain();
+    void build_f_domain(const unsigned int max = 25);
     bool add_face(const Face& f);
+    size_t face_count() const { return ms_faces.size(); }
 
   private:
     const Word m_123;

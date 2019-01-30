@@ -13,4 +13,8 @@ struct Pair
 };
 
 std::vector<Pair> get_braid_relns(const std::vector<Word>& gens, KnuthBendix& kb,
-	                              unsigned int max_braid=10);
+	                                unsigned int max_braid=10);
+
+int get_braid_relation(const Word& a, const Word& b,
+                       const unsigned int max_braid = 100,
+                       const unsigned int min_braid = 2);

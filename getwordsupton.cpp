@@ -78,7 +78,7 @@ std::vector<Word> get_words_upto_n(const unsigned int n, const std::vector<Word>
         }
         // check if we've seen this before!
         bool seen = false;
-        const Word *wd = nullptr; // uninitialized pointer exciting!
+/*        const Word *wd = nullptr; // uninitialized pointer exciting!
         size_t l = 0;
         for (wd = seen_words.data(), l = 0; l < seen_words.size(); ++l, ++wd)
         {
@@ -92,7 +92,24 @@ std::vector<Word> get_words_upto_n(const unsigned int n, const std::vector<Word>
                         << wd->as_string() << "\n";
             break;
           }
+        }*/
+
+        size_t l = 0;
+        for (unsigned int w = 0; w < seen_words.size(); ++w)
+        {
+          count += 1;
+          const Word wd = seen_words[w];
+          if (new_word.is_equal(wd))// || new_word.is_equal_inverse(wd))
+          {
+            seen = true;
+            kb.add(Relation(&new_word, &wd));
+            if (VERBOSE)
+              std::cout << new_word.as_string() << " is equal to "
+                        << wd.as_string() << "\n";
+            break;
+          }
         }
+
         if (!seen)
           seen_words.push_back(new_word);
       }

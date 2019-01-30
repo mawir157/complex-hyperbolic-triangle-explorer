@@ -30,7 +30,7 @@ std::vector<Word> is_power(const std::vector<Word>& seen_words,
     for (size_t j = 0; j < add_words.size(); ++j)
     {
       const Word base_word = add_words[j];
-      if (word_to_check.is_equal(&base_word))
+      if (word_to_check.is_equal(base_word))
         continue;
       if (word_to_check.word_length() < base_word.word_length())
         continue;
@@ -38,7 +38,7 @@ std::vector<Word> is_power(const std::vector<Word>& seen_words,
       for (int p=1; p <= base_word.get_order(); ++p)
       {
         const Word pow_word = power(base_word, p);
-        if (word_to_check.is_equal(&pow_word))
+        if (word_to_check.is_equal(pow_word))
         {
           if (v)
             std::cout << word_to_check.as_string() << " = (" << base_word.as_string() << ")^" << p
@@ -90,15 +90,15 @@ auto start = std::chrono::high_resolution_clock::now();
     {
       const Word test_word = reduced_words[j];
       // is it equal to a seen word or the inverse of a seen word
-      if (comp_word.is_equal(&test_word)) { matched = true; break; }
-      if (comp_word.is_equal_inverse(&test_word)) { matched = true; break; }
+      if (comp_word.is_equal(test_word)) { matched = true; break; }
+      if (comp_word.is_equal_inverse(test_word)) { matched = true; break; }
 
       // is it equal to a the conjugate of a seen word or the conjugate of an inverse of a seen word
       for (size_t k = 0; k < generators.size(); ++k)
       {
         const Word conj_test_word = conjugate(test_word, generators[k]);
-        if (comp_word.is_equal(&conj_test_word)) { matched = true; break; }
-        if (comp_word.is_equal_inverse(&conj_test_word)) { matched = true; break; }
+        if (comp_word.is_equal(conj_test_word)) { matched = true; break; }
+        if (comp_word.is_equal_inverse(conj_test_word)) { matched = true; break; }
       }
 
       if (matched)
@@ -128,8 +128,8 @@ std::vector<Word> kill_conjugates(const std::vector<Word>& seen_words,
       {
         const Word last_char = get_generator(conj_test_word.last_element(), generators);          
         conj_test_word = conjugate(conj_test_word, last_char);
-        if (conj_test_word.is_equal(&test_word)) { matched = true; break; }
-        if (conj_test_word.is_equal_inverse(&test_word)) { matched = true; break; }
+        if (conj_test_word.is_equal(test_word)) { matched = true; break; }
+        if (conj_test_word.is_equal_inverse(test_word)) { matched = true; break; }
       }
       if (matched)
         break;
@@ -261,12 +261,12 @@ int main(int argc, char *argv[])
   const comp_d u(std::cos(2.0 * PI / 7.0), std::sin(2.0 * PI / 7.0));
 
   CompMat3 mat_R1(3, 3);
-  mat_R1 << psi * psi << rho            << -psi * std::conj(tau) << arma::endr
-         << 0.0       << std::conj(psi) << 0.0                   << arma::endr
-         << 0.0       << 0.0            << std::conj(psi)        << arma::endr;
-  // mat_R1 << 1.0 << u + u*u + u*u*u*u << u*u  << arma::endr
-  //        << 0.0 << -1.0              << 0.0  << arma::endr
-  //        << 0.0 << 0.0               << -1.0 << arma::endr;
+  //mat_R1 << psi * psi << rho            << -psi * std::conj(tau) << arma::endr
+  //       << 0.0       << std::conj(psi) << 0.0                   << arma::endr
+  //       << 0.0       << 0.0            << std::conj(psi)        << arma::endr;
+  mat_R1 << 1.0 << u + u*u + u*u*u*u << u*u  << arma::endr
+         << 0.0 << -1.0              << 0.0  << arma::endr
+         << 0.0 << 0.0               << -1.0 << arma::endr;
   std::vector<Generator> vec_R1{Generator::R1};
   Word word_R1(vec_R1, mat_R1, IsomClass::Reflection,
                arma::trace(mat_R1), (int)ref_order);
@@ -276,12 +276,12 @@ int main(int argc, char *argv[])
                arma::trace(arma::inv(mat_R1)), (int)ref_order);
 
   CompMat3 mat_R2(3, 3);
-  mat_R2 << std::conj(psi)        << 0.0       << 0.0            << arma::endr
-         << -psi * std::conj(rho) << psi * psi << sigma          << arma::endr
-         << 0.0                   << 0.0       << std::conj(psi) << arma::endr;
-  // mat_R2 << -1.0                         << 0.0 << 0.0       << arma::endr
-  //        << std::conj(u + u*u + u*u*u*u) << 1.0 << u*u*u*u*u << arma::endr
-  //        << 0.0                          << 0.0 << -1.0      << arma::endr;
+  //mat_R2 << std::conj(psi)        << 0.0       << 0.0            << arma::endr
+  //       << -psi * std::conj(rho) << psi * psi << sigma          << arma::endr
+  //       << 0.0                   << 0.0       << std::conj(psi) << arma::endr;
+  mat_R2 << -1.0                         << 0.0 << 0.0       << arma::endr
+         << std::conj(u + u*u + u*u*u*u) << 1.0 << u*u*u*u*u << arma::endr
+         << 0.0                          << 0.0 << -1.0      << arma::endr;
   std::vector<Generator> vec_R2{Generator::R2};
   Word word_R2(vec_R2, mat_R2, IsomClass::Reflection,
                arma::trace(mat_R2), (int)ref_order);
@@ -291,12 +291,12 @@ int main(int argc, char *argv[])
                arma::trace(arma::inv(mat_R2)), (int)ref_order);
 
   CompMat3 mat_R3(3, 3);
-  mat_R3 << std::conj(psi) << 0.0                     << 0.0       << arma::endr
-         << 0.0            << std::conj(psi)          << 0.0       << arma::endr
-         << tau            << -psi * std::conj(sigma) << psi * psi << arma::endr;
-  // mat_R3 << -1.0      << 0.0  << 0.0 << arma::endr
-  //        << 0.0       << -1.0 << 0.0 << arma::endr
-  //        << u*u*u*u*u << u*u  << 1.0 << arma::endr;
+  //mat_R3 << std::conj(psi) << 0.0                     << 0.0       << arma::endr
+  //       << 0.0            << std::conj(psi)          << 0.0       << arma::endr
+  //       << tau            << -psi * std::conj(sigma) << psi * psi << arma::endr;
+  mat_R3 << -1.0      << 0.0  << 0.0 << arma::endr
+         << 0.0       << -1.0 << 0.0 << arma::endr
+         << u*u*u*u*u << u*u  << 1.0 << arma::endr;
   std::vector<Generator> vec_R3{Generator::R3};
   Word word_R3(vec_R3, mat_R3, IsomClass::Reflection,
                arma::trace(mat_R3), (int)ref_order);
@@ -341,26 +341,26 @@ int main(int argc, char *argv[])
   WordVector d_E3R3(E3R3);
   kb.add(Relation(d_E3R3));
 
-  std::cout << "Checking for braid relations in the group presentation\n";
-  get_braid_relns(generators, kb);
-  std::cout << "Found " << kb.size() << " braid relations\n";
+  // std::cout << "Checking for braid relations in the group presentation\n";
+  // get_braid_relns(generators, kb);
+  // std::cout << "Found " << kb.size() << " braid relations\n";
 
-  auto start = std::chrono::high_resolution_clock::now();
-  std::cout << "finding all unique words upto length " << upto << "\n";
-  std::vector<Word> unique_words = get_words_upto_n(upto, generators, kb);
-  auto finish = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = finish - start;
-  std::cout << "Found " << unique_words.size() << " words. Elapsed time: " << elapsed.count() << " s\n";
-  std::cout << "Looking for relevant relations in group presentation\n";
-  std::vector<Word> relevant_words = reduce_words(unique_words, generators);
-  std::cout << relevant_words.size() << "\n";
+  // auto start = std::chrono::high_resolution_clock::now();
+  // std::cout << "finding all unique words upto length " << upto << "\n";
+  // std::vector<Word> unique_words = get_words_upto_n(upto, generators, kb);
+  // auto finish = std::chrono::high_resolution_clock::now();
+  // std::chrono::duration<double> elapsed = finish - start;
+  // std::cout << "Found " << unique_words.size() << " words. Elapsed time: " << elapsed.count() << " s\n";
+  // std::cout << "Looking for relevant relations in group presentation\n";
+  // std::vector<Word> relevant_words = reduce_words(unique_words, generators);
+  // std::cout << relevant_words.size() << "\n";
 
-  std::cout << "Removing conjugate words from group presentation\n";
-  relevant_words = kill_conjugates(relevant_words, generators);
+  // std::cout << "Removing conjugate words from group presentation\n";
+  // relevant_words = kill_conjugates(relevant_words, generators);
 
-  std::cout << "Removing power words from group presentation\n";
-  relevant_words = is_power(relevant_words, 100, false);
-  print_word_vector(relevant_words, false); //print_c_and_p(relevant_words);
+  // std::cout << "Removing power words from group presentation\n";
+  // relevant_words = is_power(relevant_words, 100, false);
+  // print_word_vector(relevant_words, false); //print_c_and_p(relevant_words);
 
   // std::cout << "Running Knuth-bendix\n";
   // kb.run_algo();
@@ -371,5 +371,15 @@ int main(int argc, char *argv[])
   // base_vector << 1.0 << arma::endr
   //             << 1.0 << arma::endr
   //             << 1.0 << arma::endr;
+
+  ComFunDomain f_dom(word_R1 * word_R2 * word_R3);
+  Face start_face(word_R1, word_R2, word_R3);
+  std::cout << f_dom.face_count() << std::endl;
+
+  f_dom.add_face(start_face);
+  std::cout << f_dom.face_count() << std::endl;
+
+  f_dom.build_f_domain(100);
+
   return 0;
 };

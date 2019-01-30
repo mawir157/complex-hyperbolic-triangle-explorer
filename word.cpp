@@ -39,32 +39,32 @@ std::string Word::as_string() const
   return word_str;
 }
 
-bool Word::is_equal(const Word *wd, const bool debug) const
+bool Word::is_equal(const Word& wd, const bool debug) const
 {
-  if (m_iso_class != wd->get_isom_class())
+  if (m_iso_class != wd.get_isom_class())
     return false;
 
-  if (m_order != wd->get_order())
+  if (m_order != wd.get_order())
     return false;
 
-  if (!eq_trace(m_trace, wd->get_trace()))
+  if (!eq_trace(m_trace, wd.get_trace()))
     return false;
 
-  if (!is_close(m_matrix, wd->get_matrix()))
+  if (!is_close(m_matrix, wd.get_matrix()))
     return false;
 
   return true;
 }
 
-bool Word::is_equal_inverse(const Word *wd, const bool debug) const
+bool Word::is_equal_inverse(const Word& wd, const bool debug) const
 {
-  if (m_iso_class != wd->get_isom_class())
+  if (m_iso_class != wd.get_isom_class())
     return false;
 
-  if (m_order != wd->get_order())
+  if (m_order != wd.get_order())
     return false;
 
-  if (!is_close(m_matrix, arma::inv(wd->get_matrix())))
+  if (!is_close(m_matrix, arma::inv(wd.get_matrix())))
     return false;
 
   return true;
