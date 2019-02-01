@@ -149,7 +149,7 @@ void Word::simplify_gen_vec()
   return;
 }
 
-void Word::conjugate(const Word *P)
+void Word::conjugate(const Word& P)
 {
 
 //    CompMat3               m_matrix;
@@ -158,13 +158,13 @@ void Word::conjugate(const Word *P)
 //    comp_d                 m_trace;
 //    int                    m_order;
   // create the new isometry matrix
-  m_matrix = P->get_matrix() * m_matrix * arma::inv(P->get_matrix());
+  m_matrix = P.get_matrix() * m_matrix * arma::inv(P.get_matrix());
   // the isoclass, trace and order do not change
   std::vector<Generator> base_vector = m_gen_vec;
-  std::vector<Generator> conj_vector = P->get_gen_vec();
+  std::vector<Generator> conj_vector = P.get_gen_vec();
   m_gen_vec.clear();
 
-  m_gen_vec.reserve(base_vector.size() + 2 * P->get_gen_vec().size());
+  m_gen_vec.reserve(base_vector.size() + 2 * P.get_gen_vec().size());
 
   for (size_t i = 0; i < conj_vector.size(); ++i)
     m_gen_vec.push_back(conj_vector[i]);

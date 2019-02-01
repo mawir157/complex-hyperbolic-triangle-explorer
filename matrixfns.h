@@ -7,11 +7,19 @@
 #include <string>
 #include <cmath>
 #include <chrono>
-#include <set>
 
 typedef std::complex<double> comp_d;
 typedef arma::Mat<comp_d> CompMat3;
 typedef arma::cx_dvec point;
+
+struct mat_sig
+{
+  mat_sig(unsigned int p, unsigned int n, unsigned int g);
+
+  unsigned int m_pos;
+  unsigned int m_nul;
+  unsigned int m_neg;
+};
 
 static const bool VERBOSE = false;
 static const double PI = 3.14159265358979323;
@@ -37,6 +45,7 @@ int mat_order(const CompMat3& matrix, const int max_order=1000);
 int mat_order_alt(const CompMat3& matrix, const int max_order=1000);
 // Print the eigen-structure of ta matrix (for debugging)
 void print_e_structure(const CompMat3& matrix, const std::string& Name, const double tol=TOL);
+mat_sig get_mat_sig(const CompMat3& matrix, const double tol=TOL);
 // Returns the unique -ve eigen vector of a matrix wrt Hermitian form H
 point get_neg_evec(const CompMat3& M, const CompMat3& H);
 // The Goldman trace value of a matrix

@@ -31,7 +31,7 @@ class Word
     void simplify_gen_vec();
 
     // inplace conjugation
-    void conjugate(const Word *P);
+    void conjugate(const Word& P);
     
     // getters
     int get_order() const { return m_order; }

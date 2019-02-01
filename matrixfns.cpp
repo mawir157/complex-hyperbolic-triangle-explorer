@@ -1,5 +1,10 @@
 #include "matrixfns.h"
 
+mat_sig::mat_sig(unsigned int p, unsigned int n, unsigned int g) :
+    m_pos(p)
+  , m_nul(n)
+  , m_neg(g) {}
+
 void print_e_structure(const CompMat3& matrix, const std::string& Name, const double tol)
 {
   arma::cx_vec eigvals = arma::eig_gen( matrix );
@@ -21,6 +26,28 @@ void print_e_structure(const CompMat3& matrix, const std::string& Name, const do
   }
   std::cout << Name << " has signature (" << pos_evals << ", " << neg_evals << ")\n";
   std::cout << Name << " has Goldman trace formula " << goldman(matrix) << "\n";
+}
+
+mat_sig get_mat_sig(const CompMat3& matrix, const double tol)
+{
+  arma::cx_vec eigvals = arma::eig_gen( matrix );
+  unsigned int pos_evals = 0;
+  unsigned int nul_evals = 0;
+  unsigned int neg_evals = 0;
+  for (size_t i = 0; i < eigvals.size(); ++i)
+  {
+    if (std::abs(std::real(eigvals[i])) > TOL)
+    {
+      if (std::real(eigvals[i]) > 0.0)
+        ++pos_evals;
+      else
+        ++neg_evals;
+    }
+    else
+      ++nul_evals;
+  }
+  mat_sig ret(pos_evals, nul_evals, neg_evals);
+  return ret;
 }
 
 point get_neg_evec(const CompMat3& M, const CompMat3& H)

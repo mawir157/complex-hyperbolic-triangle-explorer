@@ -1,6 +1,7 @@
 matrixfns.o: matrixfns.cpp matrixfns.h
 reduction.o: reduction.cpp reduction.h word.h matrixfns.h
-f_domain.o: f_domain.cpp f_domain.h matrixfns.h word.h
+f_domain.o: f_domain.cpp f_domain.h matrixfns.h word.h getbraidrelns.h \
+ knuth_bendix.h reduction.h
 knuth_bendix.o: knuth_bendix.cpp knuth_bendix.h reduction.h word.h \
  matrixfns.h
 getwordsupton.o: getwordsupton.cpp getwordsupton.h word.h matrixfns.h \
