@@ -36,12 +36,13 @@ std::vector<Pair> get_braid_relns(const std::vector<Word>& gens, KnuthBendix& kb
         alt = !alt;
         count += 1;
       }
-      if (count >= max_braid)
+      if ((count >= max_braid) && (VERBOSE))
         std::cout << "No braid relation between " << gen_a.as_string() 
                   << " and " << gen_b.as_string() << "\n";
       else
       {
-        std::cout << LHS.as_string() << " = " << RHS.as_string() << "\n";
+        if (VERBOSE)
+          std::cout << LHS.as_string() << " = " << RHS.as_string() << "\n";
         Pair pr(LHS.get_gen_vec(), RHS.get_gen_vec());
         pair_vec.push_back(pr);
         Relation braid_rel(&LHS, &RHS);

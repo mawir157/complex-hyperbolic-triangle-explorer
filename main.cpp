@@ -173,20 +173,22 @@ void print_c_and_p(const std::vector<Word>& word_vec)
 
 int main(int argc, char *argv[])
 {
-  unsigned int upto = 12;
-  unsigned int max_ref = 2;
+  unsigned int from = 3;
+  unsigned int upto = 24;
+  unsigned int min_ref = 7;
+  unsigned int max_ref = 7;
      
-  for (unsigned int p = 3; p <= upto; ++p)
+  for (unsigned int p = from; p <= upto; ++p)
   {
     for (unsigned int q = p; q <= upto; ++q)
     {
       for (unsigned int r = q; r <= upto; ++r)
       {
-        for (unsigned int n = 3; n <= upto; ++n)
+        for (unsigned int n = from; n <= upto; ++n)
         {
-          for (unsigned int ref = 2; ref <= max_ref; ++ref)
+          for (unsigned int ref = min_ref; ref <= max_ref; ++ref)
           {
-            // std::cout << p << " " << q << " " << r << " " << n << " " << ref << std::endl;
+            //std::cout << p << " " << q << " " << r << " " << n << " " << ref << std::endl;
             unsigned int ref_order = ref;
             const double ref_angle = 2.0 * PI / (double)ref_order;
             const comp_d psi(std::cos(ref_angle / 3.0), std::sin(ref_angle / 3.0));
@@ -199,8 +201,11 @@ int main(int argc, char *argv[])
             const double rr = 2 * std::cos(PI / (double)r);
             double test = ( -2 * cos((2 * PI) / (double)n) - 2 + 
                              (rq * rq) + (rr * rr * rp * rp)) / ( 2 * rp * rq * rr);
-            if ((test < -1) || (test >1))
-              break;
+            if ((test < -1) || (test > 1))
+            {
+              //DEBUG("a");
+              continue;
+            }
 
             const double t = std::acos(test);
             const comp_d sigma(rp, 0.0);
@@ -229,7 +234,10 @@ int main(int argc, char *argv[])
             if ((abs(arma::det(mat_R1) - comp_d(1, 0)) > TOL) ||
                 (abs(arma::det(mat_R1) - comp_d(1, 0)) > TOL) ||
                 (abs(arma::det(mat_R1) - comp_d(1, 0)) > TOL))
+            {
+              //DEBUG("b");
               continue;
+            }
 
             // TO DO GET HERMITIAN FORM
             const comp_d alpha = 2 * std::sin(PI / ref_order);
@@ -237,12 +245,15 @@ int main(int argc, char *argv[])
             const comp_d beta_2 = comp_d(0.0, 1.0) * psii3_2 * std::conj(sigma);
             const comp_d beta_3 = comp_d(0.0, 1.0) * psii3_2 * std::conj(tau);
             CompMat3 mat_H(3, 3);
-            mat_H << alpha             << std::conj(beta_1) << beta_3            << arma::endr
+            mat_H << alpha             << std::conj(beta_1) << -beta_3            << arma::endr
                   << beta_1            << alpha             << std::conj(beta_2) << arma::endr
-                  << std::conj(beta_3) << beta_2            << alpha             << arma::endr;
+                  << -std::conj(beta_3) << beta_2            << alpha             << arma::endr;
             mat_sig sig = get_mat_sig(mat_H);
             if ((sig.m_pos != 2) || (sig.m_nul != 0) || (sig.m_neg != 1))
+            {
+              //DEBUG("c");
               continue;
+            }
             
 //            print_e_structure(mat_H, "Hermitian form H");
 
@@ -274,13 +285,55 @@ int main(int argc, char *argv[])
             //////////////////////////////////////////////////////////////////////////////
             Word R123 = word_R1 * word_R2 * word_R3;
 
-            if ((R123.get_isom_class() == IsomClass::Elliptic) &&
+            if ((R123.get_isom_class() == IsomClass::Elliptic ||
+                 R123.get_isom_class() == IsomClass::Reflection) &&
                 (R123.get_order() < 0))
+            {
+              //DEBUG("d");
               continue;
+            }
 
-            if ((R123.get_isom_class() != IsomClass::Parabolic) && 
-                (R123.get_isom_class() != IsomClass::Elliptic))
+            if (R123.get_isom_class() == IsomClass::Loxodromic)
+            {
+              //DEBUG("e");
               continue;
+            }
+
+            if (R123.get_isom_class() == IsomClass::Parabolic)
+              std::cout << "WARNING 123 is parabolic";
+
+            std::vector<Word> generators;
+            generators.reserve(6);
+            generators.push_back(word_R1);
+            generators.push_back(word_R2);
+            generators.push_back(word_R3);
+            generators.push_back(word_E1);
+            generators.push_back(word_E2);
+            generators.push_back(word_E3);
+            KnuthBendix kb;
+            get_braid_relns(generators, kb);
+            const unsigned int max_w_len = ref_order == 2 ? 8 : 6;
+            std::vector<Word> unique_words = get_words_upto_n(max_w_len, generators, kb);
+
+            //have we seen an elliptic wo
+            bool nfre = false;
+            for (unsigned int i = 0; i < unique_words.size(); ++i)
+            {
+              Word wd = unique_words[i];
+              if ((wd.get_isom_class() == IsomClass::Elliptic ||
+                   wd.get_isom_class() == IsomClass::Reflection) &&
+                  (wd.get_order() < 0))
+              {
+                nfre = true;
+                break;
+              }
+            }
+
+            if (nfre)
+            {
+              //DEBUG("f");
+              continue;
+            }
 
             std::cout << "(" << get_braid_relation(word_R2, word_R3) << ","
                              << get_braid_relation(word_R3, word_R1) << ","

@@ -5,6 +5,11 @@ mat_sig::mat_sig(unsigned int p, unsigned int n, unsigned int g) :
   , m_nul(n)
   , m_neg(g) {}
 
+void mat_sig::print_sig() const
+{
+  std::cout << "(" << m_pos << "," << m_neg << ")" <<std::endl;
+}
+
 void print_e_structure(const CompMat3& matrix, const std::string& Name, const double tol)
 {
   arma::cx_vec eigvals = arma::eig_gen( matrix );

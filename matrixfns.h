@@ -15,6 +15,7 @@ typedef arma::cx_dvec point;
 struct mat_sig
 {
   mat_sig(unsigned int p, unsigned int n, unsigned int g);
+  void print_sig() const;
 
   unsigned int m_pos;
   unsigned int m_nul;

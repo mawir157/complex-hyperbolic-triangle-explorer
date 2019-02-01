@@ -116,18 +116,22 @@ std::vector<Word> get_words_upto_n(const unsigned int n, const std::vector<Word>
 
     }
     int max_pos = (1 - std::pow(6, i+2)) / (-5);
-    std::cout << i << " | " << seen_words_n_minus_1.size() << " -> "
-              << seen_words.size() << " / " << max_pos
-              << " (" << 100.0*seen_words.size() / max_pos << "%)\n";
+    if (VERBOSE)
+      std::cout << i << " | " << seen_words_n_minus_1.size() << " -> "
+                << seen_words.size() << " / " << max_pos
+                << " (" << 100.0*seen_words.size() / max_pos << "%)\n";
     i += 1;
   }
-  std::cout << "Total unique words seen " << seen_words.size() <<"\n";
-  std::cout << "Total relations found " << kb.size() <<"\n";
+  if (VERBOSE)
+    std::cout << "Total unique words seen " << seen_words.size() <<"\n";
+  if (VERBOSE)
+    std::cout << "Total relations found " << kb.size() <<"\n";
 //  kb.print();
 //  kb.run_algo();
 //  std::cout << "Total relations found " << kb.size() <<"\n";
 //  kb.print();
-  std::cout << "Comparisons made " << count << "\n";
+  if (VERBOSE)
+    std::cout << "Comparisons made " << count << "\n";
 
   return seen_words;
 }

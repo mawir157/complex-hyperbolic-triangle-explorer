@@ -18,6 +18,7 @@ class Face
     void set_face_matched(const bool b) { m_face_matched = b; }
     bool is_side_paired() const { return m_side_paired; }
     void set_side_paired(const bool b) { m_side_paired = b; }
+    IsomClass iso_class_bc() const { return m_word_bc.get_isom_class(); }
 
   private:
     const Word m_word_side_a;
