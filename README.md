@@ -3,6 +3,8 @@ Program for exploring the properties of complex hyperbolic triangle groups
 
 1. Install OpenSSL `sudo apt-get install libssl-dev`
 
+2. Install Blas and LAAPACK `sudo apt-get install libblas-dev liblapack-dev`
+
 2. Install cmake https://cmake.org/install/
 
 3. Install Armadillo
